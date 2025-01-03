@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FLAMES Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    h1 {
+      color: #333;
+    }
+    h2{
+      color: #555;
+      position: fixed;
+      bottom: o;
+      left: 0;
+      width: 100;
+
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>FLAMES Calculator</h1>
+  <label for="name1">Your Name:</label>
+  <input type="text" id="name1"><br><br>
+  <label for="name2">Crush's Name:</label>
+  <input type="text" id="name2"><br><br>
+  <button onclick="calculateFlames()">Calculate</button>
+  <p id="result"></p>
+  <footer>
+
+    <p>&copy; created by vicky 2025 [https://github.com/ravitejako]. All Rights Reserved.</p>
+  
+  </footer>
+  <script>
+    function calculateFlames() {
+      // Get names from input fields
+      var name1 = document.getElementById("name1").value;
+      var name2 = document.getElementById("name2").value;
+
+      // Validate input
+      if (!name1 || !name2) {
+        document.getElementById("result").textContent = "Please enter both names!";
+        return;
+      }
+
+      // Convert to lowercase and remove spaces
+      name1 = name1.toLowerCase().replace(/\s+/g, "");
+      name2 = name2.toLowerCase().replace(/\s+/g, "");
+
+      // Remove common characters
+      for (var i = 0; i < name1.length; i++) {
+        var char = name1.charAt(i);
+        if (name2.includes(char)) {
+          name1 = name1.replace(char, "");
+          name2 = name2.replace(char, "");
+          i--; // Adjust index after character removal
+        }
+      }
+
+      // Calculate remaining letter count
+      var count = name1.length + name2.length;
+
+      // FLAMES logic
+      var flamesLetters = ["F", "L", "A", "M", "E", "S"];
+      var relationship = {
+        "F": "Friends",
+        "L": "Love",
+        "A": "Affection",
+        "M": "Marriage",
+        "E": "Enemy",
+        "S": "Siblings",
+      };
+
+      // Calculate index
+      var index = (count - 1) % flamesLetters.length;
+      var result = relationship[flamesLetters[index]];
+
+      // Display result
+      document.getElementById("result").textContent = `Your relationship prediction is: ${result}`;
+    }
+  </script>
+</body>
+</html>
