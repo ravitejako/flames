@@ -1,36 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FLAMES Game</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
-      margin: 50px;
+      background-color: #f0f0f0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 2;
     }
 
     h1 {
       color: #333;
-    }
-    h2{
-      color: #555;
-      position: fixed;
-      bottom: o;
-      left: 0;
-      width: 100;
-
+      margin-bottom: 20px;
     }
 
     label {
+      font-size: 18px;
       display: block;
-      margin-bottom: 5px;
+      margin-top: 10px;
     }
 
     input[type="text"] {
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      width: 200px;
+      width: 250px;
+      text-align: center;
+      font-size: 16px;
+      display: block;
+      margin: 5px auto;
     }
 
     button {
@@ -40,58 +61,65 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
     }
 
     #result {
-      font-size: 18px;
+      font-size: 22px;
       margin-top: 20px;
+      font-weight: bold;
       color: #555;
+    }
+
+    /* Floating animations */
+    .animation {
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.8;
+      animation: floatUp 3s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <h1>FLAMES Calculator</h1>
-  <label for="name1">Your Name:</label>
-  <input type="text" id="name1"><br><br>
-  <label for="name2">Crush's Name:</label>
-  <input type="text" id="name2"><br><br>
-  <button onclick="calculateFlames()">Calculate</button>
-  <p id="result"></p>
-  <footer>
 
-    <p>&copy; created by vicky 2025 [https://github.com/ravitejako]. All Rights Reserved.</p>
-  
-  </footer>
+  <div class="container">
+    <h1>FLAMES Calculator</h1>
+    <label for="name1">Your Name:</label>
+    <input type="text" id="name1">
+    <label for="name2">Crush's Name:</label>
+    <input type="text" id="name2">
+    <button onclick="calculateFlames()">Calculate</button>
+    <p id="result"></p>
+  </div>
+
   <script>
     function calculateFlames() {
-      // Get names from input fields
-      var name1 = document.getElementById("name1").value;
-      var name2 = document.getElementById("name2").value;
+      var name1 = document.getElementById("name1").value.trim().toLowerCase();
+      var name2 = document.getElementById("name2").value.trim().toLowerCase();
+      var resultElement = document.getElementById("result");
 
-      // Validate input
       if (!name1 || !name2) {
-        document.getElementById("result").textContent = "Please enter both names!";
+        resultElement.textContent = "Please enter both names!";
         return;
       }
 
-      // Convert to lowercase and remove spaces
-      name1 = name1.toLowerCase().replace(/\s+/g, "");
-      name2 = name2.toLowerCase().replace(/\s+/g, "");
-
-      // Remove common characters
       for (var i = 0; i < name1.length; i++) {
-        var char = name1.charAt(i);
+        var char = name1[i];
         if (name2.includes(char)) {
           name1 = name1.replace(char, "");
           name2 = name2.replace(char, "");
-          i--; // Adjust index after character removal
+          i--;
         }
       }
 
-      // Calculate remaining letter count
       var count = name1.length + name2.length;
-
-      // FLAMES logic
       var flamesLetters = ["F", "L", "A", "M", "E", "S"];
       var relationship = {
         "F": "Friends",
@@ -99,16 +127,50 @@
         "A": "Affection",
         "M": "Marriage",
         "E": "Enemy",
-        "S": "Siblings",
+        "S": "Siblings"
       };
 
-      // Calculate index
       var index = (count - 1) % flamesLetters.length;
       var result = relationship[flamesLetters[index]];
 
-      // Display result
-      document.getElementById("result").textContent = `Your relationship prediction is: ${result}`;
+      resultElement.textContent = `Your relationship prediction is: ${result}`;
+
+      // Clear old animations
+      document.querySelectorAll(".animation").forEach(el => el.remove());
+
+      // Trigger new animation
+      if (result === "Friends") {
+        triggerFullPageAnimation("🤝"); // High-Fives
+      } else if (result === "Love") {
+        triggerFullPageAnimation("❤️"); // Hearts
+      } else if (result === "Marriage") {
+        triggerFullPageAnimation("🎉"); // Confetti
+      } else if (result === "Siblings") {
+        triggerFullPageAnimation("🤗"); // Handshakes
+      } else if (result === "Enemy") {
+        triggerFullPageAnimation("💥"); // Explosions
+      } else if (result === "Affection") {
+        triggerFullPageAnimation("✨"); // Sparkles
+      }
+    }
+
+    function triggerFullPageAnimation(symbol) {
+      for (let i = 0; i < 15; i++) {
+        let animation = document.createElement("div");
+        animation.className = "animation";
+        animation.textContent = symbol;
+        document.body.appendChild(animation);
+
+        let startX = Math.random() * window.innerWidth;
+        let startY = Math.random() * window.innerHeight;
+
+        animation.style.left = `${startX}px`;
+        animation.style.top = `${startY}px`;
+
+        setTimeout(() => animation.remove(), 3000);
+      }
     }
   </script>
+
 </body>
 </html>
